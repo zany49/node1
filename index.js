@@ -1,4 +1,5 @@
 import express from 'express';
+import {MongoClient} from 'mongodb';
 const app = express();
 const PORT = 4000;
 const users= [
@@ -66,7 +67,12 @@ const users= [
 
 
    //mongodb connection
-   const url = "https://localhost/flipkart"
+   const MONGO_URL = "https://localhost/flipkart";
+
+   async function createConnection(){
+       const client = new MongoClient(MONGO_URL); 
+      await client.connect();
+   }
 //curd
 
 app.use(express.json());//middleware to prase thr body as json
