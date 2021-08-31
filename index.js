@@ -1,5 +1,9 @@
 import express from 'express';
 import { MongoClient } from 'mongodb';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 const app = express();
 const PORT = 4000;
 // const users= [
@@ -68,7 +72,7 @@ const PORT = 4000;
 
    //mongodb connection
    //const MONGO_URL = "mongodb://localhost";
-   const MONGO_URL = "mongodb+srv://zany007:<password>@cluster0.pzq9j.mongodb.net";
+   const MONGO_URL = process.env.MONGO_URL;
 //connecting mongodb brands to displaydata
    async function createConnection(){
        const client = new MongoClient(MONGO_URL); 
