@@ -67,7 +67,8 @@ const PORT = 4000;
 
 
    //mongodb connection
-   const MONGO_URL = "mongodb://localhost";
+   //const MONGO_URL = "mongodb://localhost";
+   const MONGO_URL = "mongodb+srv://zany007:abdulzany8147708@cluster0.pzq9j.mongodb.net";
 //connecting mongodb brands to displaydata
    async function createConnection(){
        const client = new MongoClient(MONGO_URL); 
