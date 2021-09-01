@@ -1,11 +1,12 @@
 import express from 'express';
 import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 dotenv.config();
 
 const app = express();
-const PORT = 4000;
+const PORT = process.env.PORT;
 // const users= [
 //     {
 //      "createdAt": "2021-07-14T03:33:29.935Z",
@@ -81,8 +82,9 @@ const PORT = 4000;
    }
    
 //curd
-
+app.use(cors());//to allow request of server in react app
 app.use(express.json());//middleware to prase thr body as json
+
 
 app.get('/', function (req, res) {
     res.send('hello world .. new day');
