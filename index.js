@@ -2,6 +2,9 @@ import express from 'express';
 import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import bcrypt from 'bcrypt';
+import { getuserbyid, newFunction,hashedpwd } from './helper.js';
+
 
 dotenv.config();
 
@@ -74,8 +77,26 @@ const PORT = process.env.PORT;
    //mongodb connection
    //const MONGO_URL = "mongodb://localhost";
    const MONGO_URL = process.env.MONGO_URL;
+
+//genpassword hashedpass
+async function genPassword(password) {
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedpassword = await bcrypt.hash(password, salt);
+    console.log(hashedpassword);
+    return hashedpassword;
+
+
+}
+
+// genPassword("pwd");
+
+
+
+
+
 //connecting mongodb brands to displaydata
-   async function createConnection(){
+   export async function createConnection(){
        const client = new MongoClient(MONGO_URL); 
        await client.connect();
       return client;
@@ -93,6 +114,16 @@ app.get('/', function (req, res) {
 //     res.send(users);
 // })
 
+//singup
+app.post('/data/signup', async function (req, res) {
+    const { name, password, pic } = req.body;
+    console.log(name,password,pic);
+
+    const hashedpassword = await genPassword(password);
+     console.log(hashedpassword);
+     const result = await hashedpwd(name, pic, hashedpassword);
+    res.send(result);
+})
 
 
 //posting data to db
@@ -110,28 +141,38 @@ app.post('/data', async function (req, res) {
 //getting data from database
 app.get('/data', async function (req, res) {
     
-    const client = await createConnection();
-    const result = await client
-    .db("flipkart")
-    .collection("users")
-    .find({})
-    .toArray();
+    const result = await newFunction();
     
     res.send(result);
 })
 
+
+
 //getting by id
 app.get('/data/:userid', async function (req, res) {
     const { userid } = req.params;
+    const result = await getuserbyid(userid);
+    
+    res.send(result);
+})
+
+//deleting data
+app.delete('/data/:userid', async function (req, res) {
+    const { userid } = req.params;
+   
     const client = await createConnection();
     const result = await client
     .db("flipkart")
     .collection("users")
-    .find({id: userid})
-    .toArray();
+    .deleteOne({ _id:ObjectId(id) });
     
     res.send(result);
 })
+
+app.listen(PORT,()=>console.log('server is on',PORT));
+
+
+
 
 
 
@@ -172,6 +213,4 @@ app.get('/data/:userid', async function (req, res) {
 //     //no user found
 
 // })
-app.listen(PORT,()=>console.log('server is on',PORT));
-
 
