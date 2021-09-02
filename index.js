@@ -1,5 +1,5 @@
 import express from 'express';
-import { MongoClient } from 'mongodb';
+import { MongoClient,ObjectId } from 'mongodb';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
@@ -134,7 +134,7 @@ app.post('/data', async function (req, res) {
     const result = await client
     .db("flipkart")
     .collection("users")
-    .insertMany(req.body);
+    .insertMany(usersData);
     
     res.send(result);
 })
@@ -157,9 +157,9 @@ app.get('/data/:userid', async function (req, res) {
 })
 
 //deleting data
-app.delete('/data/:userid', async function (req, res) {
-    const { userid } = req.params;
-   
+app.delete('/data/:id', async function (req, res) {
+    const { id } = req.params;
+    
     const client = await createConnection();
     const result = await client
     .db("flipkart")
