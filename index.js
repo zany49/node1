@@ -3,12 +3,14 @@ import { MongoClient,ObjectId } from 'mongodb';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
-import { getuserbyid, newFunction,hashedpwd } from './helper.js';
+import {router} from './routes/data.js';
+
+import {router as userRouter} from './routes/user.js';
 
 
 dotenv.config();
 
-const app = express();
+export const app = express();
 const PORT = process.env.PORT;
 // const users= [
 //     {
@@ -79,7 +81,7 @@ const PORT = process.env.PORT;
    const MONGO_URL = process.env.MONGO_URL;
 
 //genpassword hashedpass
-async function genPassword(password) {
+export async function genPassword(password) {
 
     const salt = await bcrypt.genSalt(10);
     const hashedpassword = await bcrypt.hash(password, salt);
@@ -110,64 +112,10 @@ app.use(express.json());//middleware to prase thr body as json
 app.get('/', function (req, res) {
     res.send('hello world .. new day');
 })
-// app.get('/users', function (req, res) {
-//     res.send(users);
-// })
+//routing to data.js
+app.use("/data", router);
 
-//singup
-app.post('/data/signup', async function (req, res) {
-    const { name, password, pic } = req.body;
-    console.log(name,password,pic);
-
-    const hashedpassword = await genPassword(password);
-     console.log(hashedpassword);
-     const result = await hashedpwd(name, pic, hashedpassword);
-    res.send(result);
-})
-
-
-//posting data to db
-app.post('/data', async function (req, res) {
-    const usersData = req.body;
-    console.log(usersData);
-    const client = await createConnection();
-    const result = await client
-    .db("flipkart")
-    .collection("users")
-    .insertMany(usersData);
-    
-    res.send(result);
-})
-//getting data from database
-app.get('/data', async function (req, res) {
-    
-    const result = await newFunction();
-    
-    res.send(result);
-})
-
-
-
-//getting by id
-app.get('/data/:userid', async function (req, res) {
-    const { userid } = req.params;
-    const result = await getuserbyid(userid);
-    
-    res.send(result);
-})
-
-//deleting data
-app.delete('/data/:id', async function (req, res) {
-    const { id } = req.params;
-    
-    const client = await createConnection();
-    const result = await client
-    .db("flipkart")
-    .collection("users")
-    .deleteOne({ _id:ObjectId(id) });
-    
-    res.send(result);
-})
+app.use("/user", userRouter);
 
 app.listen(PORT,()=>console.log('server is on',PORT));
 

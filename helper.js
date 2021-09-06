@@ -1,4 +1,5 @@
 import { createConnection } from './index.js';
+import {ObjectId} from 'mongodb';
 
  async function newFunction() {
     const client = await createConnection();
@@ -18,7 +19,7 @@ import { createConnection } from './index.js';
     const result = await client
         .db("flipkart")
         .collection("users")
-        .find({ id: userid })
+        .find({ _id: ObjectId(userid) })
         .toArray();
     return result;
 }
@@ -37,4 +38,34 @@ import { createConnection } from './index.js';
     return result;
 }
 
-export{ newFunction,getuserbyid,hashedpwd }
+
+async function searchUserbyname(name) {
+    const client = await createConnection();
+    const result = await client
+        .db("flipkart")
+        .collection("users")
+        .findOne({ name: name })
+        
+
+    return result;
+}
+async function deleteData(id) {
+    const client = await createConnection();
+    const result = await client
+        .db("flipkart")
+        .collection("users")
+        .deleteOne({ _id: ObjectId(id) });
+    return result;
+}
+
+async function postdata(usersData) {
+const client = await createConnection();
+const result = await client
+    .db("flipkart")
+    .collection("users")
+    .insertMany(usersData);
+return result;
+}
+
+
+export{ newFunction,getuserbyid,hashedpwd,searchUserbyname,deleteData,postdata }
