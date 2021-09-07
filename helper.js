@@ -67,5 +67,17 @@ const result = await client
 return result;
 }
 
-
-export{ newFunction,getuserbyid,hashedpwd,searchUserbyname,deleteData,postdata }
+async function insertOneuser(name, pic) {
+    const client = await createConnection();
+    const result = await client
+        .db("flipkart")
+        .collection("users")
+        .insertOne({
+            name: name,
+            avatar: pic,
+           
+            createdAt: new Date().toISOString(),
+        });
+    return result;
+}
+export{ newFunction,getuserbyid,hashedpwd,searchUserbyname,deleteData,postdata,insertOneuser }

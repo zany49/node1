@@ -1,5 +1,5 @@
 import express from 'express';
-import { getuserbyid, newFunction as postdata,deleteData} from '../helper.js';
+import { getuserbyid, newFunction as postdata,deleteData,insertOneuser} from '../helper.js';
 import { auth } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -10,7 +10,7 @@ const router = express.Router();
 //auth is from auth.js
 
 //using auth as middileware like express.json
-router.get('/', auth ,async function (req, res) {
+router.get('/' /*, auth*/ ,async function (req, res) {
     
     const result = await postdata();
     
@@ -33,6 +33,14 @@ router.post('/', async function (req, res) {
     console.log(usersData);
     const result = await postdata(usersData);
     
+    res.send(result);
+})
+//posting one data to db
+router.post('/createuser', async function (req, res) {
+    const {name,pic} = req.body;
+    
+    const result = await insertOneuser( name,pic);
+    console.log(result);
     res.send(result);
 })
 //deleting data
